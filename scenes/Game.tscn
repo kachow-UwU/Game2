@@ -1,0 +1,57 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/Game.gd" type="Script" id=2]
+[ext_resource path="res://scripts/Spawner.gd" type="Script" id=3]
+[ext_resource path="res://scripts/Score.gd" type="Script" id=4]
+
+[sub_resource type="CubeMesh" id=3]
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0.321569, 0.301961, 0.301961, 1 )
+
+[sub_resource type="BoxShape" id=4]
+
+[node name="Game" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
+
+[node name="Platform" type="StaticBody" parent="."]
+
+[node name="MeshInstance" type="MeshInstance" parent="Platform"]
+transform = Transform( 6, 0, 0, 0, 1, 0, 0, 0, 200, 0, -1, -184.456 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Platform"]
+transform = Transform( 6, 0, 0, 0, 1, 0, 0, 0, 200, 0, -1, -184.456 )
+shape = SubResource( 4 )
+
+[node name="Camera" type="Camera" parent="Platform"]
+transform = Transform( 1, 0, 0, 0, 0.884549, 0.466448, 0, -0.466448, 0.884549, 0, 6.41219, 5.77167 )
+far = 200.0
+
+[node name="Score" type="Label" parent="Platform/Camera"]
+margin_left = 11.0
+margin_top = 9.0
+margin_right = 73.0
+margin_bottom = 23.0
+text = "Score: 0"
+script = ExtResource( 4 )
+
+[node name="Spawner" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -230.474 )
+script = ExtResource( 3 )
+
+[node name="EnemyTimer" type="Timer" parent="Spawner"]
+wait_time = 2.0
+autostart = true
+
+[node name="EnemyYellow" type="Timer" parent="Spawner"]
+wait_time = 1.5
+autostart = true
+
+[connection signal="timeout" from="Spawner/EnemyTimer" to="Spawner" method="_on_EnemyTimer_timeout"]
+[connection signal="timeout" from="Spawner/EnemyYellow" to="Spawner" method="_on_EnemyYellow_timeout"]
